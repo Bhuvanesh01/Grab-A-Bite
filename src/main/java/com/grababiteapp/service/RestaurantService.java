@@ -1,6 +1,7 @@
 package com.grababiteapp.service;
 
 public interface RestaurantService {
+
 	
 	void addFoodItem();
 	void deleteFoodItem(int foodItemId);
@@ -9,5 +10,8 @@ public interface RestaurantService {
 	void rejectOrder(int orderId);
 	void showProfile();
 	void changeOrderStatus(int orderId);
+
+
+
 	
 }
