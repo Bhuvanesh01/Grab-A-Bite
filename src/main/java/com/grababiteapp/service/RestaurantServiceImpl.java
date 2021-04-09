@@ -26,17 +26,16 @@ public class RestaurantServiceImpl implements RestaurantService {
 	}
 
 	public void rejectOrder(int orderId) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	public void showProfile() {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	public void changeOrderStatus(int orderId) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
