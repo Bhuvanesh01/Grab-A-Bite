@@ -9,7 +9,6 @@ public class Restaurant {
 	private String restAddress;
 	public Restaurant() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	public Restaurant(int restId, String restName, String restEmail, String restPassword, int restPhone,
 			String restAddress) {

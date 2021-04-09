@@ -10,7 +10,6 @@ public class Customer {
 	private String custAddress;
 	public Customer() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	public Customer(int custId, String custName, String custEmail, String custPassword, int custPhone,
 			String custAddress) {
