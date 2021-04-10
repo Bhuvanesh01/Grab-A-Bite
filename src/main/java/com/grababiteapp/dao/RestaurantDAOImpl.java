@@ -16,11 +16,11 @@ public class RestaurantDAOImpl implements RestaurantDAO {
 		PreparedStatement statement = null;
 		try {
 			statement = connection.prepareStatement(sql);
-			statement.setInt(1, order.getorderrestId());
-			statement.setString(2, order.getorderfoodName());
-			statement.setInt(3, order.getorderfoodId());
-			statement.setDouble(4, order.getorderprice());
-			statement.setString(5, order.getorderrestquantity());
+			statement.setInt(1, getrestId());
+			statement.setString(2, getfoodName());
+			statement.setInt(3, getfoodId());
+			statement.setDouble(4, getprice());
+			statement.setString(5, getrestquantity());
 		
 			statement.execute();
 		} catch (SQLException e) {
@@ -38,14 +38,14 @@ public class RestaurantDAOImpl implements RestaurantDAO {
 	}
 
 	public void deleteFoodItem(int foodItemId) {
-		String sql = "update from menu where orderfoodid=?";
+		String sql = "update from menu where foodid=?";
 		Connection connection = DBConnection.openConnection();
 		PreparedStatement statement = null;
 		int result = 0;
 		try {
 			statement = connection.prepareStatement(sql);
 			
-			statement.setInt(1,orderfoodid);
+			statement.setInt(1,foodid);
 			
 			result = statement.executeUpdate();
 			
@@ -60,12 +60,12 @@ public class RestaurantDAOImpl implements RestaurantDAO {
 				}
 			DBConnection.closeConnection();
 		}
-		return result;
+		
 	}
 	
 
 	public void updateFoodItemDetails(int foodItemId, double price) {
-		String sql = "update menu set orderprice=? where foodid=?";
+		String sql = "update menu set price=? where foodid=?";
 		Connection connection = DBConnection.openConnection();
 		PreparedStatement statement = null;
 		int result = 0;
@@ -87,7 +87,7 @@ public class RestaurantDAOImpl implements RestaurantDAO {
 				}
 			DBConnection.closeConnection();
 		}
-		return result;
+		
 	}
 	
 
@@ -115,7 +115,7 @@ public class RestaurantDAOImpl implements RestaurantDAO {
 				}
 			DBConnection.closeConnection();
 		}
-		return result;
+		
 		
 	}
 
@@ -142,7 +142,7 @@ public class RestaurantDAOImpl implements RestaurantDAO {
 				}
 			DBConnection.closeConnection();
 		}
-		return result;
+		
 	}
 
 	public void showProfile() {
@@ -161,7 +161,7 @@ public class RestaurantDAOImpl implements RestaurantDAO {
 			 int foodId = rs.getInt(" foodId");
 			  double  foodprice= rs.getDouble("food price");
 			  String  quantity= rs.getString("food quantity");
-			  int  orderrestId= rs.getInt("restaurant id");		
+			  int  restId= rs.getInt("restaurant id");		
 			 Order order= new Order(foodname, foodid, foodprice, foodquantity, restId);
 			 orderList.add(order);
 			}			
@@ -176,7 +176,7 @@ public class RestaurantDAOImpl implements RestaurantDAO {
 				}
 			DBConnection.closeConnection();		
 	}
-		return ;
+	
 	}
 
 	public void changeOrderStatus(int orderId) {
@@ -202,6 +202,6 @@ public class RestaurantDAOImpl implements RestaurantDAO {
 				}
 			DBConnection.closeConnection();
 		}
-		return result;
+	
 
 	}}
