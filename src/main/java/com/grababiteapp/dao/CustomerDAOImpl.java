@@ -6,50 +6,87 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
 import com.grababiteapp.model.Customer;
 import com.grababiteapp.model.Menu;
-import com.grababiteapp.model.Order;
 
 public class CustomerDAOImpl implements CustomerDAO {
 
-	public void addFoodItem() {
-		String sql = "insert into food values(?,?,?,?)";
+	public int loginForCustomer(String email, String password) {
+		String sql = "select custid, custemail, custpassword from Customer where custemail = ? and custpassword = ?";
 		Connection connection = DBConnection.openConnection();
 		PreparedStatement statement = null;
+		int custid = 0;
 		try {
-		statement = connection.prepareStatement(sql);
-		statement.setString(1, Menu.getName());
-		statement.setInt(2, Menu.getfoodId());
-		statement.setString(3, Menu.getcuisine());
-		statement.setDouble(4, Menu.getfoodprice());
-		statement.execute();
-		} catch(SQLException e) {
+			statement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			statement.setString(1, email);
+			statement.setString(2, password);
+			ResultSet rs = statement.executeQuery();
+			while (rs.next()) {
+				String custEmail = rs.getString("custemail");
+				String custPassword = rs.getString("custpassword");
+				if (custEmail.equals(email) && (custPassword.equals(password)))
+					custid = rs.getInt(1);
+			}
+		} catch (SQLException e) {
 			System.out.println(e.getMessage());
-		}finally {
-			if(statement!=null)
+		} finally {
+			if (statement != null)
 				try {
 					statement.close();
-				}catch(SQLException e) {
+				} catch (SQLException e) {
 					System.out.println(e.getMessage());
 				}
 			DBConnection.closeConnection();
 		}
+		return custid;
+
 	}
 
-	public void deleteFoodItem(int foodItemId) {
-		String sql = "delete from food where foodid=?";
+	public int checkAlreadyRegistered(String custEmail) {
+		String sql = "Select custemail from customer where custemail=?";
 		Connection connection = DBConnection.openConnection();
 		PreparedStatement statement = null;
 		int result = 0;
 		try {
 			statement = connection.prepareStatement(sql);
-			statement.setInt(1, foodid);
-			result = statement.executeUpdate();
-			
+			statement.setString(1, custEmail);
+			ResultSet rs = statement.executeQuery();
+			while (rs.next()) {
+				String email = rs.getString("custemail");
+				if (custEmail.equals(email)) {
+					result = 1;
+				}
+			}
 		} catch (SQLException e) {
-			e.printStackTrace();
-		}  finally {
+			System.out.println(e.getMessage());
+		} finally {
+			if (statement != null)
+				try {
+					statement.close();
+				} catch (SQLException e) {
+					System.out.println(e.getMessage());
+				}
+			DBConnection.closeConnection();
+		}
+		return result;
+	}
+
+	public void customerSignup(Customer customerDetails) {
+		String sql = "insert into Customer(custname,custemail,custpassword,custphone,custaddress) values(?,?,?,?,?)";
+		Connection connection = DBConnection.openConnection();
+		PreparedStatement statement = null;
+		try {
+			statement = connection.prepareStatement(sql);
+			statement.setString(1, customerDetails.getCustName());
+			statement.setString(2, customerDetails.getCustEmail());
+			statement.setString(3, customerDetails.getCustPassword());
+			statement.setInt(4, customerDetails.getCustPhone());
+			statement.setString(5, customerDetails.getCustAddress());
+			statement.execute();
+
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		} finally {
 			if (statement != null)
 				try {
 					statement.close();
@@ -60,16 +97,66 @@ public class CustomerDAOImpl implements CustomerDAO {
 		}
 	}
 
-	public void placeOrder() {
-		String sql = "insert into order values(?,?,?)";
+	public void addFoodItem(Menu menu) {
+//		String sql = "insert into Orders(custid,foodname,price,quantity,restid) values(?,?,?,?,?)";
+//		Connection connection = DBConnection.openConnection();
+//		PreparedStatement statement = null;
+//		try {
+//		statement = connection.prepareStatement(sql);
+//		statement.setString(1, menu.getfoodId());
+//		statement.setInt(2, menu.getName());
+//		statement.setString(3, menu.getCuisine());
+//		statement.setDouble(4, menu.getPrice());
+//		statement.setInt(5,menu.getrestId());
+//		statement.execute();
+//		} catch(SQLException e) {
+//			System.out.println(e.getMessage());
+//		}finally {
+//			if(statement!=null)
+//				try {
+//					statement.close();
+//				}catch(SQLException e) {
+//					System.out.println(e.getMessage());
+//				}
+//			DBConnection.closeConnection();
+//		}
+	}
+
+	public int deleteFoodItem(int foodItemId) {
+		String sql = "delete from Orders where foodid=?";
 		Connection connection = DBConnection.openConnection();
 		PreparedStatement statement = null;
+		int result = 0;
+		try {
+			statement = connection.prepareStatement(sql);
+			statement.setInt(1, foodItemId);
+			result = statement.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (statement != null)
+				try {
+					statement.close();
+				} catch (SQLException e) {
+					System.out.println(e.getMessage());
+				}
+			DBConnection.closeConnection();
+		}
+		return result;
+	}
+
+	public int placeOrder(int orderid) {
+		String sql = "update Orders set status = ? where orderid = ?"  ;
+		Connection connection = DBConnection.openConnection();
+		PreparedStatement statement = null;
+		int result =0;
+		String status = "Order_Placed";
 		try {
 		statement = connection.prepareStatement(sql);
-		statement.setString(1, order.getordername());
-		statement.setInt(2, order.getorderid());
-		statement.setDouble(3, order.getorderprice());
-		statement.execute();
+		statement.setString(1, status);
+		statement.setInt(2, orderid);
+		result = statement.executeUpdate();
 		} catch(SQLException e) {
 			System.out.println(e.getMessage());
 		}finally {
@@ -81,16 +168,18 @@ public class CustomerDAOImpl implements CustomerDAO {
 				}
 			DBConnection.closeConnection();
 		}
+		return result;
 	}
 
-	public void cancelOrder() {
-		String sql = "delete from order where orderid=?";
+	public int cancelOrder(int orderid) {
+		String sql = "delete from Orders where orderid=?";
 		Connection connection = DBConnection.openConnection();
 		PreparedStatement statement = null;
+		int result = 0;
 		try {
 		statement = connection.prepareStatement(sql);
-		statement.setInt(1, order.getorderid());
-		statement.execute();
+		statement.setInt(1, orderid);
+		result = statement.executeUpdate();
 		} catch(SQLException e) {
 			System.out.println(e.getMessage());
 		}finally {
@@ -102,97 +191,101 @@ public class CustomerDAOImpl implements CustomerDAO {
 				}
 			DBConnection.closeConnection();
 		}
+		return result;
 	}
 
-	public void showProfile() {
-		String sql = "select * from customer";
+	public Customer showProfile(int custId) {
+		String sql = "select * from Customer where custid = ?";
 		Connection connection = DBConnection.openConnection();
 		PreparedStatement statement = null;
-		List<Customer> customer = new ArrayList<>();
+		Customer custDetails = null;
 		try {
-			statement = connection.prepareStatement(sql,ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
+			statement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			statement.setInt(1, custId);
 			ResultSet rs = statement.executeQuery();
-			while(rs.next()) {
-				int custId = rs.getInt(1);
-				String custName = rs.getString("name");
-				String custEmail = rs.getString("email");
-				String custPassword = rs.getString("password");
-				int custPhone = rs.getInt(5);
-				String custAddress = rs.getString("address");
-				Customer cust = new Customer(custId, custName, custEmail, custPassword, custPhone, custAddress);
-				customerList.add(cust);
+
+			while (rs.next()) {
+				int custid = rs.getInt(1);
+				String custName = rs.getString("custname");
+				String email = rs.getString("custemail");
+				String password = rs.getString("custpassword");
+				int phone = rs.getInt("custphone");
+				String address = rs.getString("custaddress");
+				custDetails = new Customer(custid, custName, email, password, phone, address);
 			}
-			} catch(SQLException e) {
+		} catch (SQLException e) {
 			System.out.println(e.getMessage());
-		}finally {
-			if(statement!=null)
+		} finally {
+			if (statement != null)
 				try {
 					statement.close();
-				}catch(SQLException e) {
+				} catch (SQLException e) {
 					System.out.println(e.getMessage());
 				}
 			DBConnection.closeConnection();
-
 		}
+		return custDetails;
 	}
 
-	public void showFoodMenu() {
-		String sql = "select * from food";
+	public List<Menu> showFoodMenu() {
+		String sql = "select * from Menu";
 		Connection connection = DBConnection.openConnection();
 		PreparedStatement statement = null;
 		List<Menu> menu = new ArrayList<>();
 		try {
-			statement = connection.prepareStatement(sql,ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
+			statement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 			ResultSet rs = statement.executeQuery();
-			while(rs.next()) {
+			while (rs.next()) {
+				int foodid = rs.getInt(1);
 				String name = rs.getString("name");
-				String category = rs.getString("category");
-				int foodid = rs.getInt(2);
+				String cuisine = rs.getString("cuisine");
+				String foodtype = rs.getString("foodtype");
 				double price = rs.getDouble("price");
-				Menu food = new Menu(name, foodid, category, price);
-				menuList.add(food);
+				int restid = rs.getInt(6);
+				Menu foodDetails = new Menu(foodid, name, cuisine, foodtype, price, restid);
+				menu.add(foodDetails);
 			}
-			} catch(SQLException e) {
+		} catch (SQLException e) {
 			System.out.println(e.getMessage());
-		}finally {
-			if(statement!=null)
+		} finally {
+			if (statement != null)
 				try {
 					statement.close();
-				}catch(SQLException e) {
+				} catch (SQLException e) {
 					System.out.println(e.getMessage());
 				}
 			DBConnection.closeConnection();
-
 		}
+		return menu;
 	}
 
-	public void showOrdersHistory() {
-		String sql = "select * from order";
-		Connection connection = DBConnection.openConnection();
-		PreparedStatement statement = null;
-		List<Order> orderList = new ArrayList<>();
-		try {
-			statement = connection.prepareStatement(sql,ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
-			ResultSet rs = statement.executeQuery();
-			while(rs.next()) {
-				String name = rs.getString("name");
-				int orderid = rs.getInt(2);
-				double orderprice = rs.getDouble("price");
-				Order order = new Order(name, orderid, price);
-				orderList.add(order);
-			}
-			} catch(SQLException e) {
-			System.out.println(e.getMessage());
-		}finally {
-			if(statement!=null)
-				try {
-					statement.close();
-				}catch(SQLException e) {
-					System.out.println(e.getMessage());
-				}
-			DBConnection.closeConnection();
-
-		}
-	}
+//	public void showOrdersHistory() {
+//		String sql = "select * from order";
+//		Connection connection = DBConnection.openConnection();
+//		PreparedStatement statement = null;
+//		List<Order> orderList = new ArrayList<>();
+//		try {
+//			statement = connection.prepareStatement(sql,ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
+//			ResultSet rs = statement.executeQuery();
+//			while(rs.next()) {
+//				String name = rs.getString("name");
+//				int orderid = rs.getInt(2);
+//				double orderprice = rs.getDouble("price");
+//				Order order = new Order(name, orderid, price);
+//				orderList.add(order);
+//			}
+//			} catch(SQLException e) {
+//			System.out.println(e.getMessage());
+//		}finally {
+//			if(statement!=null)
+//				try {
+//					statement.close();
+//				}catch(SQLException e) {
+//					System.out.println(e.getMessage());
+//				}
+//			DBConnection.closeConnection();
+//
+//		}
+//	}
 
 }

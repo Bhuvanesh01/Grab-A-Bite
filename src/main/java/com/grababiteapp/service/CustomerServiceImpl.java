@@ -1,34 +1,79 @@
 package com.grababiteapp.service;
 
+import java.util.List;
+
 import com.grababiteapp.dao.CustomerDAO;
 import com.grababiteapp.dao.CustomerDAOImpl;
+import com.grababiteapp.exception.IdNotFoundException;
+import com.grababiteapp.exception.InvalidCredentialsException;
+import com.grababiteapp.exception.UserAlreadyPresentException;
+import com.grababiteapp.model.Customer;
+import com.grababiteapp.model.Menu;
 
 public class CustomerServiceImpl implements CustomerService {
 
-	CustomerDAO customerDAO = new CustomerDAOImpl(); 
+	CustomerDAO customerDAO = new CustomerDAOImpl();
+
+	public int loginForCustomer(String email, String password) throws InvalidCredentialsException {
+		int result = customerDAO.loginForCustomer(email, password);
+		if (result == 0)
+			throw new InvalidCredentialsException("Inavlid Username or Password! Please try Again.");
+		else {
+			return result;
+		}
+	}
+
+	public void customerSignup(Customer customerDetails) {
+		customerDAO.customerSignup(customerDetails);
+	}
+
+	public int checkAlreadyRegistered(String custEmail) throws UserAlreadyPresentException {
+		int result = customerDAO.checkAlreadyRegistered(custEmail);
+		if (result == 1)
+			throw new UserAlreadyPresentException(
+					"This User is already Registered! Please use a Different Email to Register.");
+		else {
+			return result;
+		}
+	}
 
 	public void addFoodItem() {
-		customerDAO.addFoodItem();
+//		customerDAO.addFoodItem();
 	}
 
-	public void deleteFoodItem(int foodItemId) {
-		customerDAO.deleteFoodItem(foodItemId);
+	public int deleteFoodItem(int foodItemId) throws IdNotFoundException {
+		int result = customerDAO.deleteFoodItem(foodItemId);
+		if (result == 0)
+			throw new IdNotFoundException("No Food Item with " + foodItemId + "Found");
+		else {
+			return result;
+		}
 	}
 
-	public void placeOrder() {
-		customerDAO.placeOrder();
+	public int placeOrder(int orderid) throws IdNotFoundException {
+		int result = customerDAO.placeOrder(orderid);
+		if (result == 0)
+			throw new IdNotFoundException("No Orders with " + orderid + "Found");
+		else {
+			return result;
+		}
 	}
 
-	public void cancelOrder() {
-		customerDAO.cancelOrder();
+	public int cancelOrder(int orderid) throws IdNotFoundException {
+		int result = customerDAO.cancelOrder(orderid);
+		if (result == 0)
+			throw new IdNotFoundException("No Orders with " + orderid + "Found");
+		else {
+			return result;
+		}
 	}
 
-	public void showProfile() {
-		customerDAO.showProfile();
+	public Customer showProfile(int custId) {
+		return customerDAO.showProfile(custId);
 	}
 
-	public void showFoodMenu() {
-		customerDAO.showFoodMenu();
+	public List<Menu> showFoodMenu() {
+		return customerDAO.showFoodMenu();
 	}
 
 }

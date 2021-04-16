@@ -2,18 +2,18 @@ package com.grababiteapp.model;
 
 public class Menu {
 
-	private int foodId;
+	private Integer foodId;
 	private String name;
 	private String cuisine;
 	private String type;
-	private double price;
-	private int restId;
+	private Double price;
+	private Integer restId;
 
 	public Menu() {
 		super();
 	}
 
-	public Menu(int foodId, String name, String cuisine, String type, double price, int restId) {
+	public Menu(Integer foodId, String name, String cuisine, String type, Double price, Integer restId) {
 		super();
 		this.foodId = foodId;
 		this.name = name;
@@ -23,11 +23,20 @@ public class Menu {
 		this.restId = restId;
 	}
 
-	public int getfoodId() {
+	public Menu(String name, String cuisine, String type, Double price, Integer restId) {
+		super();
+		this.name = name;
+		this.cuisine = cuisine;
+		this.type = type;
+		this.price = price;
+		this.restId = restId;
+	}
+
+	public Integer getfoodId() {
 		return foodId;
 	}
 
-	public void setfoodId(int foodId) {
+	public void setfoodId(Integer foodId) {
 		this.foodId = foodId;
 	}
 
@@ -55,19 +64,19 @@ public class Menu {
 		this.type = type;
 	}
 
-	public double getPrice() {
+	public Double getPrice() {
 		return price;
 	}
 
-	public void setPrice(double price) {
+	public void setPrice(Double price) {
 		this.price = price;
 	}
 
-	public int getrestId() {
+	public Integer getrestId() {
 		return restId;
 	}
 
-	public void setrestId(int restId) {
+	public void setrestId(Integer restId) {
 		this.restId = restId;
 	}
 
