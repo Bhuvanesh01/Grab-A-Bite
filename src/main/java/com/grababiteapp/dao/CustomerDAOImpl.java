@@ -283,31 +283,61 @@ public class CustomerDAOImpl implements CustomerDAO {
 		PreparedStatement statement = null;
 		List<Orders> orderList = new ArrayList<>();
 		try {
-			statement = connection.prepareStatement(sql,ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
-			 statement.setInt(1, custid);
+			statement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			statement.setInt(1, custid);
 			ResultSet rs = statement.executeQuery();
-			while(rs.next()) {
+			while (rs.next()) {
 				int orderid = rs.getInt("orderid");
 				String foodname = rs.getString("foodname");
 				double price = rs.getDouble("price");
 				int quantity = rs.getInt("quantity");
 				String status = rs.getString("status");
-				Orders order = new Orders(orderid,foodname,price,quantity,status);
+				Orders order = new Orders(orderid, foodname, price, quantity, status);
 				orderList.add(order);
 			}
-			} catch(SQLException e) {
+		} catch (SQLException e) {
 			System.out.println(e.getMessage());
-		}finally {
-			if(statement!=null)
+		} finally {
+			if (statement != null)
 				try {
 					statement.close();
-				}catch(SQLException e) {
+				} catch (SQLException e) {
 					System.out.println(e.getMessage());
 				}
 			DBConnection.closeConnection();
 
 		}
 		return orderList;
+	}
+
+	@Override
+	public double total(int orderid) {
+		String sql = "select price,quantity from Orders where orderid = ?";
+		Connection connection = DBConnection.openConnection();
+		PreparedStatement statement = null;
+		double total = 0;
+		try {
+			statement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			statement.setInt(1, orderid);
+			ResultSet rs = statement.executeQuery();
+
+			while (rs.next()) {
+				double price = rs.getInt(1);
+				int quantity = rs.getInt(2);
+				total = price * quantity;
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		} finally {
+			if (statement != null)
+				try {
+					statement.close();
+				} catch (SQLException e) {
+					System.out.println(e.getMessage());
+				}
+			DBConnection.closeConnection();
+		}
+		return total;
 	}
 
 }

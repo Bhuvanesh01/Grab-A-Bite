@@ -81,4 +81,9 @@ public class CustomerServiceImpl implements CustomerService {
 		return customerDAO.showOrdersHistory(custid);
 	}
 
+	@Override
+	public double total(int orderid) {
+		return customerDAO.total(orderid);
+	}
+
 }

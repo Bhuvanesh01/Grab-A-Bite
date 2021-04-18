@@ -25,6 +25,9 @@ public interface CustomerDAO {
 	Customer showProfile(int custId);
 
 	List<Menu> showFoodMenu();
+
 	List<Orders> showOrdersHistory(int custid);
+
+	double total(int orderid);
 
 }

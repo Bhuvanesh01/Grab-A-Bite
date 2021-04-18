@@ -83,11 +83,13 @@ public class Login {
 					int orderId = sc.nextInt();
 					try {
 						result2 = custService.placeOrder(orderId);
+						double total = custService.total(orderId);
+						System.out.println("Total Amount For This Order is: " + total);
 					} catch (IdNotFoundException e) {
 						e.getMessage();
 					}
 					if (result2 == 1) {
-						System.out.println("Order with Id " + orderId + " Delivered Successfully");
+						System.out.println("Order with Id " + orderId + " Placed Successfully");
 					} else {
 						System.out.println("Action Not Completed");
 					}

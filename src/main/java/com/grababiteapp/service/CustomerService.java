@@ -30,4 +30,6 @@ public interface CustomerService {
 	List<Menu> showFoodMenu();
 
 	List<Orders> showOrdersHistory(int custid) throws IdNotFoundException;
+
+	double total(int orderid);
 }
