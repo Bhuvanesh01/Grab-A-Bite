@@ -57,19 +57,12 @@ public class Login {
 				System.out.println("Enter 4 to Go Back");
 				int choice4 = sc.nextInt();
 				if (choice4 == 1) {
-//					int result2 = 0;
-//					System.out.println("Enter the Food ID : ");
-//					int foodId = sc.nextInt();
-//					try {
-//						result2 = custService.addFoodItem(foodId);
-//					} catch (IdNotFoundException e) {
-//						e.getMessage();
-//					}
-//					if (result2 == 1) {
-//						System.out.println("Order with Id " + foodId + " Placed Successfully");
-//					} else {
-//						System.out.println("Action Not Completed");
-//					}
+					System.out.println("Enter the Food ID : ");
+					int foodId = sc.nextInt();
+					System.out.println("Enter Quantity : ");
+					int quantity = sc.nextInt();
+					custService.addFoodItem(custId, foodId, quantity);
+
 				} else if (choice4 == 2) {
 					int result2 = 0;
 					System.out.println("Enter Id of the Food Item : ");
@@ -99,7 +92,7 @@ public class Login {
 						System.out.println("Action Not Completed");
 					}
 				} else if (choice4 == 4) {
-					loginForRestaurant();
+					loginForCustomer();
 				} else {
 					System.out.println("Enter either 1 or 2 or 3 or 4");
 				}
@@ -120,7 +113,11 @@ public class Login {
 				}
 				break;
 			case 5:
-//				custService.showOrders();
+				try {
+					System.out.println(custService.showOrdersHistory(custId));
+				} catch (IdNotFoundException e) {
+					System.out.println(e.getMessage());
+				}
 				break;
 			case 6:
 				Runtime.getRuntime().halt(0);

@@ -9,6 +9,7 @@ import com.grababiteapp.exception.InvalidCredentialsException;
 import com.grababiteapp.exception.UserAlreadyPresentException;
 import com.grababiteapp.model.Customer;
 import com.grababiteapp.model.Menu;
+import com.grababiteapp.model.Orders;
 
 public class CustomerServiceImpl implements CustomerService {
 
@@ -37,8 +38,8 @@ public class CustomerServiceImpl implements CustomerService {
 		}
 	}
 
-	public void addFoodItem() {
-//		customerDAO.addFoodItem();
+	public void addFoodItem(int custid, int foodid, int quantity) {
+		customerDAO.addFoodItem(custid, foodid, quantity);
 	}
 
 	public int deleteFoodItem(int foodItemId) throws IdNotFoundException {
@@ -74,6 +75,10 @@ public class CustomerServiceImpl implements CustomerService {
 
 	public List<Menu> showFoodMenu() {
 		return customerDAO.showFoodMenu();
+	}
+
+	public List<Orders> showOrdersHistory(int custid) throws IdNotFoundException {
+		return customerDAO.showOrdersHistory(custid);
 	}
 
 }

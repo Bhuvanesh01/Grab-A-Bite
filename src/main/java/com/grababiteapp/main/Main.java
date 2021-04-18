@@ -1,17 +1,8 @@
 package com.grababiteapp.main;
 
-import java.sql.Connection;
 import java.util.Scanner;
-
 import com.grababiteapp.accounts.Login;
 import com.grababiteapp.accounts.Signup;
-import com.grababiteapp.dao.DBConnection;
-import com.grababiteapp.model.Customer;
-import com.grababiteapp.model.Restaurant;
-import com.grababiteapp.service.CustomerService;
-import com.grababiteapp.service.CustomerServiceImpl;
-import com.grababiteapp.service.RestaurantService;
-import com.grababiteapp.service.RestaurantServiceImpl;
 
 public class Main {
 

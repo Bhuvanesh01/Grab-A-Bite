@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.grababiteapp.model.Customer;
 import com.grababiteapp.model.Menu;
+import com.grababiteapp.model.Orders;
 
 public interface CustomerDAO {
 
@@ -13,7 +14,7 @@ public interface CustomerDAO {
 
 	int checkAlreadyRegistered(String restEmail);
 
-	void addFoodItem(Menu menu);
+	void addFoodItem(int custid, int foodid, int quantity);
 
 	int deleteFoodItem(int foodItemId);
 
@@ -24,6 +25,6 @@ public interface CustomerDAO {
 	Customer showProfile(int custId);
 
 	List<Menu> showFoodMenu();
-//	void showOrdersHistory();
+	List<Orders> showOrdersHistory(int custid);
 
 }

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import com.grababiteapp.model.Customer;
 import com.grababiteapp.model.Menu;
+import com.grababiteapp.model.Orders;
 
 public class CustomerDAOImpl implements CustomerDAO {
 
@@ -97,29 +98,46 @@ public class CustomerDAOImpl implements CustomerDAO {
 		}
 	}
 
-	public void addFoodItem(Menu menu) {
-//		String sql = "insert into Orders(custid,foodname,price,quantity,restid) values(?,?,?,?,?)";
-//		Connection connection = DBConnection.openConnection();
-//		PreparedStatement statement = null;
-//		try {
-//		statement = connection.prepareStatement(sql);
-//		statement.setString(1, menu.getfoodId());
-//		statement.setInt(2, menu.getName());
-//		statement.setString(3, menu.getCuisine());
-//		statement.setDouble(4, menu.getPrice());
-//		statement.setInt(5,menu.getrestId());
-//		statement.execute();
-//		} catch(SQLException e) {
-//			System.out.println(e.getMessage());
-//		}finally {
-//			if(statement!=null)
-//				try {
-//					statement.close();
-//				}catch(SQLException e) {
-//					System.out.println(e.getMessage());
-//				}
-//			DBConnection.closeConnection();
-//		}
+	public void addFoodItem(int custid, int foodid, int quantity) {
+		String sql = "insert into Orders(foodname,price,restid) select m.foodname,m.price,m.restid from Menu m where m.foodid=?";
+		Connection connection = DBConnection.openConnection();
+		PreparedStatement statement = null;
+		try {
+			statement = connection.prepareStatement(sql);
+			statement.setInt(1, foodid);
+			statement.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		} finally {
+			if (statement != null)
+				try {
+					statement.close();
+				} catch (SQLException e) {
+					System.out.println(e.getMessage());
+				}
+
+			DBConnection.closeConnection();
+		}
+		String sql2 = "update Orders set custid = ?, quantity = ? ";
+		Connection connection2 = DBConnection.openConnection();
+		PreparedStatement statement2 = null;
+		try {
+			statement2 = connection2.prepareStatement(sql2);
+			statement2.setInt(1, custid);
+			statement2.setInt(2, quantity);
+			statement2.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		} finally {
+			if (statement != null)
+				try {
+					statement.close();
+				} catch (SQLException e) {
+					System.out.println(e.getMessage());
+				}
+
+			DBConnection.closeConnection();
+		}
 	}
 
 	public int deleteFoodItem(int foodItemId) {
@@ -147,23 +165,23 @@ public class CustomerDAOImpl implements CustomerDAO {
 	}
 
 	public int placeOrder(int orderid) {
-		String sql = "update Orders set status = ? where orderid = ?"  ;
+		String sql = "update Orders set status = ? where orderid = ?";
 		Connection connection = DBConnection.openConnection();
 		PreparedStatement statement = null;
-		int result =0;
+		int result = 0;
 		String status = "Order_Placed";
 		try {
-		statement = connection.prepareStatement(sql);
-		statement.setString(1, status);
-		statement.setInt(2, orderid);
-		result = statement.executeUpdate();
-		} catch(SQLException e) {
+			statement = connection.prepareStatement(sql);
+			statement.setString(1, status);
+			statement.setInt(2, orderid);
+			result = statement.executeUpdate();
+		} catch (SQLException e) {
 			System.out.println(e.getMessage());
-		}finally {
-			if(statement!=null)
+		} finally {
+			if (statement != null)
 				try {
 					statement.close();
-				}catch(SQLException e) {
+				} catch (SQLException e) {
 					System.out.println(e.getMessage());
 				}
 			DBConnection.closeConnection();
@@ -177,16 +195,16 @@ public class CustomerDAOImpl implements CustomerDAO {
 		PreparedStatement statement = null;
 		int result = 0;
 		try {
-		statement = connection.prepareStatement(sql);
-		statement.setInt(1, orderid);
-		result = statement.executeUpdate();
-		} catch(SQLException e) {
+			statement = connection.prepareStatement(sql);
+			statement.setInt(1, orderid);
+			result = statement.executeUpdate();
+		} catch (SQLException e) {
 			System.out.println(e.getMessage());
-		}finally {
-			if(statement!=null)
+		} finally {
+			if (statement != null)
 				try {
 					statement.close();
-				}catch(SQLException e) {
+				} catch (SQLException e) {
 					System.out.println(e.getMessage());
 				}
 			DBConnection.closeConnection();
@@ -259,33 +277,37 @@ public class CustomerDAOImpl implements CustomerDAO {
 		return menu;
 	}
 
-//	public void showOrdersHistory() {
-//		String sql = "select * from order";
-//		Connection connection = DBConnection.openConnection();
-//		PreparedStatement statement = null;
-//		List<Order> orderList = new ArrayList<>();
-//		try {
-//			statement = connection.prepareStatement(sql,ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
-//			ResultSet rs = statement.executeQuery();
-//			while(rs.next()) {
-//				String name = rs.getString("name");
-//				int orderid = rs.getInt(2);
-//				double orderprice = rs.getDouble("price");
-//				Order order = new Order(name, orderid, price);
-//				orderList.add(order);
-//			}
-//			} catch(SQLException e) {
-//			System.out.println(e.getMessage());
-//		}finally {
-//			if(statement!=null)
-//				try {
-//					statement.close();
-//				}catch(SQLException e) {
-//					System.out.println(e.getMessage());
-//				}
-//			DBConnection.closeConnection();
-//
-//		}
-//	}
+	public List<Orders> showOrdersHistory(int custid) {
+		String sql = "select orderid,foodname,price,quantity,status from orders where custid = ?";
+		Connection connection = DBConnection.openConnection();
+		PreparedStatement statement = null;
+		List<Orders> orderList = new ArrayList<>();
+		try {
+			statement = connection.prepareStatement(sql,ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
+			 statement.setInt(1, custid);
+			ResultSet rs = statement.executeQuery();
+			while(rs.next()) {
+				int orderid = rs.getInt("orderid");
+				String foodname = rs.getString("foodname");
+				double price = rs.getDouble("price");
+				int quantity = rs.getInt("quantity");
+				String status = rs.getString("status");
+				Orders order = new Orders(orderid,foodname,price,quantity,status);
+				orderList.add(order);
+			}
+			} catch(SQLException e) {
+			System.out.println(e.getMessage());
+		}finally {
+			if(statement!=null)
+				try {
+					statement.close();
+				}catch(SQLException e) {
+					System.out.println(e.getMessage());
+				}
+			DBConnection.closeConnection();
+
+		}
+		return orderList;
+	}
 
 }

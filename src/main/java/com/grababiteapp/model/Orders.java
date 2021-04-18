@@ -26,13 +26,12 @@ public class Orders {
 		this.status = status;
 	}
 
-	public Orders(Integer custid, String foodname, Double price, Integer quantity, Integer restid, String status) {
+	public Orders(Integer orderid, String foodname, Double price, Integer quantity, String status) {
 		super();
-		this.custid = custid;
+		this.orderid = orderid;
 		this.foodname = foodname;
 		this.price = price;
 		this.quantity = quantity;
-		this.restid = restid;
 		this.status = status;
 	}
 
