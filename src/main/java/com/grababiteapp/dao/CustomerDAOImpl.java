@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
 import com.grababiteapp.model.Customer;
 import com.grababiteapp.model.Menu;
 import com.grababiteapp.model.Orders;
@@ -255,7 +256,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 			ResultSet rs = statement.executeQuery();
 			while (rs.next()) {
 				int foodid = rs.getInt(1);
-				String name = rs.getString("name");
+				String name = rs.getString("foodname");
 				String cuisine = rs.getString("cuisine");
 				String foodtype = rs.getString("foodtype");
 				double price = rs.getDouble("price");
@@ -340,4 +341,73 @@ public class CustomerDAOImpl implements CustomerDAO {
 		return total;
 	}
 
+	public List<Menu> findFoodByRestaurant(int restId) {
+		String sql = "select * from Menu where restid=?";
+		Connection connection = DBConnection.openConnection();
+		PreparedStatement statement = null;
+		List<Menu> foodList = new ArrayList<>();
+		try {
+			statement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			statement.setInt(1, restId);
+			ResultSet rs = statement.executeQuery();
+
+			while (rs.next()) {
+				int foodid = rs.getInt(1);
+				String name = rs.getString("foodname");
+				String cuisine = rs.getString("cuisine");
+				String foodtype = rs.getString("foodtype");
+				double price = rs.getDouble("price");
+				int restid = rs.getInt(6);
+				Menu foodDetails = new Menu(foodid, name, cuisine, foodtype, price, restid);
+				foodList.add(foodDetails);
+			}
+
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		} finally {
+			if (statement != null)
+				try {
+					statement.close();
+				} catch (SQLException e) {
+					System.out.println(e.getMessage());
+				}
+			DBConnection.closeConnection();
+		}
+		return foodList;
+	}
+
+	public List<Menu> findFoodByCuisine(String cuisine) {
+		String sql = "select * from Menu where cuisine like ?";
+		Connection connection = DBConnection.openConnection();
+		PreparedStatement statement = null;
+		List<Menu> foodList = new ArrayList<>();
+		try {
+			statement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			statement.setString(1, "%" + cuisine + "%");
+			ResultSet rs = statement.executeQuery();
+
+			while (rs.next()) {
+				int foodid = rs.getInt(1);
+				String name = rs.getString("foodname");
+				String cuisine1 = rs.getString("cuisine");
+				String foodtype = rs.getString("foodtype");
+				double price = rs.getDouble("price");
+				int restid = rs.getInt(6);
+				Menu foodDetails = new Menu(foodid, name, cuisine1, foodtype, price, restid);
+				foodList.add(foodDetails);
+			}
+
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		} finally {
+			if (statement != null)
+				try {
+					statement.close();
+				} catch (SQLException e) {
+					System.out.println(e.getMessage());
+				}
+			DBConnection.closeConnection();
+		}
+		return foodList;
+	}
 }

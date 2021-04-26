@@ -1,9 +1,11 @@
 package com.grababiteapp.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.grababiteapp.dao.CustomerDAO;
 import com.grababiteapp.dao.CustomerDAOImpl;
+import com.grababiteapp.exception.FoodItemNotFoundException;
 import com.grababiteapp.exception.IdNotFoundException;
 import com.grababiteapp.exception.InvalidCredentialsException;
 import com.grababiteapp.exception.UserAlreadyPresentException;
@@ -86,4 +88,18 @@ public class CustomerServiceImpl implements CustomerService {
 		return customerDAO.total(orderid);
 	}
 
+	public List<Menu> findFoodByCuisine(String cuisine) throws FoodItemNotFoundException {
+		List<Menu>	foodList = customerDAO.findFoodByCuisine(cuisine);
+		if (foodList.isEmpty())
+			throw new FoodItemNotFoundException("No Food Items Found by this cuisine type");
+		return foodList;
+	}
+
+	public List<Menu> findFoodByRestaurant(int restId) throws FoodItemNotFoundException {
+
+		List<Menu>	foodList = customerDAO.findFoodByRestaurant(restId);
+		if (foodList.isEmpty())
+			throw new FoodItemNotFoundException("No Food Items Found by this cuisine type");
+		return foodList;
+	}
 }

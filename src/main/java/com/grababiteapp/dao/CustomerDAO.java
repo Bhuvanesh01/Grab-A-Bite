@@ -29,5 +29,9 @@ public interface CustomerDAO {
 	List<Orders> showOrdersHistory(int custid);
 
 	double total(int orderid);
+	
+	List<Menu> findFoodByCuisine(String cuisine);
+	
+	List<Menu> findFoodByRestaurant(int restId);
 
 }

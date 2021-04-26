@@ -2,6 +2,7 @@ package com.grababiteapp.service;
 
 import java.util.List;
 
+import com.grababiteapp.exception.FoodItemNotFoundException;
 import com.grababiteapp.exception.IdNotFoundException;
 import com.grababiteapp.exception.InvalidCredentialsException;
 import com.grababiteapp.exception.UserAlreadyPresentException;
@@ -32,4 +33,8 @@ public interface CustomerService {
 	List<Orders> showOrdersHistory(int custid) throws IdNotFoundException;
 
 	double total(int orderid);
+
+	List<Menu> findFoodByCuisine(String cuisine)throws FoodItemNotFoundException;
+
+	List<Menu> findFoodByRestaurant(int restId)throws FoodItemNotFoundException;
 }

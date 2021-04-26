@@ -2,6 +2,7 @@ package com.grababiteapp.accounts;
 
 import java.util.Scanner;
 
+import com.grababiteapp.exception.FoodItemNotFoundException;
 import com.grababiteapp.exception.IdNotFoundException;
 import com.grababiteapp.exception.InvalidCredentialsException;
 import com.grababiteapp.model.Menu;
@@ -43,9 +44,39 @@ public class Login {
 			System.out.println("Please Enter your Choice(1-7): ");
 			int choice = sc.nextInt();
 			switch (choice) {
-			case 1:
+			case 1:System.out.println("See Menu Here: ");
+			System.out.println("Enter 1 to Show Full Menu");
+			System.out.println("Enter 2 to See Menu By Cuisine");
+			System.out.println("Enter 3 to See Menu By Restaurant");
+			System.out.println("Enter 4 to Go Back");
+			int choice0 = sc.nextInt();
+			sc.nextLine();
+			if (choice0 == 1) {
 				System.out.println(custService.showFoodMenu());
-				break;
+			} else if (choice0 == 2) {
+				System.out.println("Enter Cuisine Name : ");
+				String cuisine = sc.nextLine();
+				try {
+					System.out.println(custService.findFoodByCuisine(cuisine));
+				} catch (FoodItemNotFoundException e) {
+					e.printStackTrace();
+				}
+				
+			} else if (choice0 == 3) {
+				System.out.println("Enter the Restaurant ID  : ");
+				int restId = sc.nextInt();
+				try {
+					System.out.println(custService.findFoodByRestaurant(restId));
+				} catch (FoodItemNotFoundException e) {
+					e.printStackTrace();
+				}
+				
+			} else if (choice0 == 4) {
+				loginForCustomer();
+			} else {
+				System.out.println("Enter either 1 or 2 or 3 or 4");
+			}
+			break;
 			case 2:
 				System.out.println(custService.showProfile(custId));
 				break;
