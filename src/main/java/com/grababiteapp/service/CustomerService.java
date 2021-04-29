@@ -34,7 +34,7 @@ public interface CustomerService {
 
 	double total(int orderid);
 
-	List<Menu> findFoodByCuisine(String cuisine)throws FoodItemNotFoundException;
+	List<Menu> findFoodByCuisine(String cuisine) throws FoodItemNotFoundException;
 
-	List<Menu> findFoodByRestaurant(int restId)throws FoodItemNotFoundException;
+	List<Menu> findFoodByRestaurant(int restId) throws FoodItemNotFoundException;
 }
